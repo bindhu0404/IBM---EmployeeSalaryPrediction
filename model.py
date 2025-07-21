@@ -89,7 +89,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
 # Create model directory if not exists
-os.makedirs("model", exist_ok=True)
+os.makedirs("model1", exist_ok=True)
 
 # Load dataset
 df = pd.read_csv("data/adult 3.csv")
