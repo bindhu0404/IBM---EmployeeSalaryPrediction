@@ -143,7 +143,12 @@ def predict_income(data):
         for col in cat_features:
             if col in encoder:
                 le = encoder[col]
-                data[col] = le.transform(data[col])
+                val = data[col].iloc[0]
+                if val in le.classes_:
+                    data[col] = le.transform([val])
+                else:
+                    st.error(f"Unknown value '{val}' for {col}. Please select a valid option.")
+                    return None, None
     except Exception as e:
         st.error(f"Encoding error: {e}")
         return None, None
@@ -156,6 +161,7 @@ def predict_income(data):
     except Exception as e:
         st.error(f"Prediction error: {e}")
         return None, None
+
 
 # Make prediction
 if st.button("Predict Income"):
