@@ -92,7 +92,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 os.makedirs("model1", exist_ok=True)
 
 # Load dataset
-df = pd.read_csv("data/adult 3.csv")
+# df = pd.read_csv("data/adult 3.csv")
 
 df.replace('?', np.nan, inplace=True)
 df.dropna(inplace=True)
