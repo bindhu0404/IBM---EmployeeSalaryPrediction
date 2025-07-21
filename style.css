@@ -1,0 +1,112 @@
+/* Dark mode styling
+body {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+h1, h2, h3, h4 {
+  color: #00e5ff;
+}
+
+.stButton>button {
+  background-color: #1e88e5;
+  color: white;
+  border-radius: 10px;
+  padding: 0.5em 1.5em;
+}
+
+.stSidebar {
+  background-color: #1f1f1f;
+}
+
+.stProgress > div > div > div {
+  background-color: #00e676;
+}
+
+.stMarkdown, .stTextInput, .stSelectbox, .stSlider {
+  color: white;
+}
+
+.stImage > img {
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.5);
+}
+
+/* Make sure graphs blend with dark mode */
+/* img {
+  background-color: #121212 !important;
+} */ 
+ /* Global dark background */
+/* Set a light background and dark text */
+/* App Background */
+body {
+    background-color: #f9f9f9;
+    color: #222;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Titles and Subheaders */
+h1, h2, h3, h4 {
+    color: #222;
+}
+
+/* Card-like sections */
+div.stButton > button,
+div[data-testid="stForm"] {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Input Fields */
+input, select, textarea {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+/* Buttons */
+button {
+    border-radius: 8px !important;
+    padding: 8px 16px !important;
+    font-weight: 500;
+}
+
+/* Dropdowns (Select boxes) - cursor pointer */
+div[data-baseweb="select"] {
+    cursor: pointer !important;
+}
+
+/* Add pointer cursor on hover */
+div[data-baseweb="select"]:hover {
+    cursor: pointer !important;
+}
+
+/* Streamlit download button fix */
+.stDownloadButton > button {
+    background-color: #2563eb !important;
+    color: white !important;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+/* Scatterplot image caption styling */
+.image-caption {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 8px;
+}
+
+/* Scrollable layout improvements */
+main {
+    padding-bottom: 100px;
+}
+
+/* Horizontal Rule */
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 1.5rem 0;
+}
