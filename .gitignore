@@ -13,10 +13,7 @@ env/
 .ipynb_checkpoints/
 
 # Model & artifact files
-model1/*.pkl
-model1/*.png
-*.h5
-*.joblib
+
 
 # Data files
 *.csv
