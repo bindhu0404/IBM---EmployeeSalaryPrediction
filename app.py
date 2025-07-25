@@ -96,7 +96,7 @@ if st.button("Predict Income"):
 # Static charts
 st.markdown("---")
 st.subheader("📊 Top Influential Features")
-st.image("model1/feature_importance.png", caption="Top features from Random Forest model", use_container_width=True)
+st.image("model1/feature_importance.png", caption="Top features from Random Forest model")
 
 st.markdown("---")
 st.subheader("📉 Actual vs Predicted")
