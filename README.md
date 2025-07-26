@@ -1,4 +1,4 @@
-# 🧑‍💼 Employee Salary Prediction App
+#  Employee Salary Prediction App
 
 This is a web-based application built using **Streamlit** for predicting whether an individual's income exceeds \$50K/year based on various demographic attributes.  
 
