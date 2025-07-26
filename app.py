@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+from PIL import Image
 
 # Load model, encoders, and columns
 with open("model1/model.pkl", "rb") as f:
@@ -11,112 +12,97 @@ with open("model1/encoder.pkl", "rb") as f:
     encoders = pickle.load(f)
 
 with open("model1/columns.pkl", "rb") as f:
-    model_columns = pickle.load(f)
+    columns = pickle.load(f)
 
-st.set_page_config(page_title="Income Prediction", layout="centered")
+st.set_page_config(page_title="Employee Income Classifier", layout="centered")
+st.title("💼 Employee Income Classifier")
+st.markdown("This app predicts whether an employee's income is **>50K or <=50K** based on their profile.")
 
-st.title("🧠 Income Classification App")
-st.write("Enter your details below to predict whether your income is >50K or <=50K.")
-
-# Sample input fields (based on UCI Adult dataset)
-def user_input():
-    age = st.number_input("Age", min_value=18, max_value=100, value=30)
-    workclass = st.selectbox("Workclass", [
-        'Private', 'Self-emp-not-inc', 'Self-emp-inc', 'Federal-gov',
-        'Local-gov', 'State-gov', 'Without-pay', 'Never-worked'
-    ])
-    education = st.selectbox("Education", [
-        'Bachelors', 'Some-college', '11th', 'HS-grad', 'Prof-school',
-        'Assoc-acdm', 'Assoc-voc', '9th', '7th-8th', '12th', 'Masters',
-        '1st-4th', '10th', 'Doctorate', '5th-6th', 'Preschool'
-    ])
-    educational_num = st.number_input("Educational Number", min_value=1, max_value=20, value=10)
-    marital_status = st.selectbox("Marital Status", [
-        'Married-civ-spouse', 'Divorced', 'Never-married',
-        'Separated', 'Widowed', 'Married-spouse-absent', 'Married-AF-spouse'
-    ])
-    occupation = st.selectbox("Occupation", [
-        'Tech-support', 'Craft-repair', 'Other-service', 'Sales',
-        'Exec-managerial', 'Prof-specialty', 'Handlers-cleaners',
-        'Machine-op-inspct', 'Adm-clerical', 'Farming-fishing',
-        'Transport-moving', 'Priv-house-serv', 'Protective-serv', 'Armed-Forces'
-    ])
-    relationship = st.selectbox("Relationship", [
-        'Wife', 'Own-child', 'Husband', 'Not-in-family',
-        'Other-relative', 'Unmarried'
-    ])
-    race = st.selectbox("Race", [
-        'White', 'Asian-Pac-Islander', 'Amer-Indian-Eskimo', 'Other', 'Black'
-    ])
-    gender = st.selectbox("Gender", ['Male', 'Female'])
-    hours_per_week = st.slider("Hours per Week", min_value=1, max_value=100, value=40)
-    native_country = st.selectbox("Native Country", [
-        'United-States', 'Cambodia', 'England', 'Puerto-Rico', 'Canada',
-        'Germany', 'Outlying-US(Guam-USVI-etc)', 'India', 'Japan', 'Greece',
-        'South', 'China', 'Cuba', 'Iran', 'Honduras', 'Philippines', 'Italy',
-        'Poland', 'Jamaica', 'Vietnam', 'Mexico', 'Portugal', 'Ireland',
-        'France', 'Dominican-Republic', 'Laos', 'Ecuador', 'Taiwan',
-        'Haiti', 'Columbia', 'Hungary', 'Guatemala', 'Nicaragua', 'Scotland',
-        'Thailand', 'Yugoslavia', 'El-Salvador', 'Trinadad&Tobago', 'Peru',
-        'Hong', 'Holand-Netherlands'
-    ])
-
-    data = {
-        'age': age,
-        'workclass': workclass,
-        'education': education,
-        'educational-num': educational_num,
-        'marital-status': marital_status,
-        'occupation': occupation,
-        'relationship': relationship,
-        'race': race,
-        'gender': gender,
-        'hours-per-week': hours_per_week,
-        'native-country': native_country
+# Styling for pointer hover
+st.markdown("""
+    <style>
+    .stSelectbox:hover, .stSlider:hover, .stNumberInput:hover {
+        cursor: pointer !important;
     }
+    </style>
+""", unsafe_allow_html=True)
 
-    return pd.DataFrame([data])
+# Sidebar inputs
+st.sidebar.header("Enter Employee Details")
 
-# Preprocess user input to match model input
-def preprocess_input(input_df):
-    df = input_df.copy()
+# Input form
+workclass = st.sidebar.selectbox("Workclass", ["Private", "Self-emp-not-inc", "Self-emp-inc", "Federal-gov", "Local-gov", "State-gov", "Without-pay", "Never-worked"])
+education = st.sidebar.selectbox("Education", ["Bachelors", "HS-grad", "11th", "Masters", "9th", "Some-college", "Assoc-acdm", "Assoc-voc", "7th-8th", "Doctorate", "5th-6th", "10th", "1st-4th", "Preschool", "12th"])
+marital_status = st.sidebar.selectbox("Marital Status", ["Married-civ-spouse", "Divorced", "Never-married", "Separated", "Widowed", "Married-spouse-absent", "Married-AF-spouse"])
+occupation = st.sidebar.selectbox("Occupation", ["Tech-support", "Craft-repair", "Other-service", "Sales", "Exec-managerial", "Prof-specialty", "Handlers-cleaners", "Machine-op-inspct", "Adm-clerical", "Farming-fishing", "Transport-moving", "Priv-house-serv", "Protective-serv", "Armed-Forces"])
+relationship = st.sidebar.selectbox("Relationship", ["Wife", "Own-child", "Husband", "Not-in-family", "Other-relative", "Unmarried"])
+race = st.sidebar.selectbox("Race", ["White", "Asian-Pac-Islander", "Amer-Indian-Eskimo", "Other", "Black"])
+sex = st.sidebar.selectbox("Sex", ["Female", "Male"])
+native_country = st.sidebar.selectbox("Native Country", ["United-States", "India", "Mexico", "Philippines", "Germany", "Canada", "England", "Cuba", "Iran", "China", "France", "Puerto-Rico", "Jamaica", "Vietnam", "Japan", "Italy", "Greece", "Columbia", "Thailand", "Ecuador", "Poland", "Honduras", "Ireland", "Hungary", "Scotland", "Guatemala", "Nicaragua", "Trinadad&Tobago", "Laos", "Taiwan", "Haiti", "Hong", "South", "Yugoslavia", "El-Salvador", "Dominican-Republic", "Portugal", "Outlying-US(Guam-USVI-etc)", "Cambodia", "Holand-Netherlands", "Peru"])
 
-    # Apply encoders
-    for col in df.columns:
-        if col in encoders:
-            le = encoders[col]
-            try:
-                df[col] = le.transform(df[col])
-            except ValueError:
-                st.error(f"Unknown category in column '{col}': '{df[col].values[0]}'")
-                st.stop()
+age = st.sidebar.slider("Age", 17, 90, 30)
+fnlwgt = st.sidebar.number_input("Fnlwgt", 10000, 1000000, 200000)
+education_num = st.sidebar.slider("Education Number", 1, 16, 10)
+hours_per_week = st.sidebar.slider("Hours per Week", 1, 99, 40)
 
-    # Add missing columns (if any)
-    for col in model_columns:
-        if col not in df.columns:
-            df[col] = 0
+# Create input DataFrame
+user_data = pd.DataFrame({
+    'age': [age],
+    'workclass': [workclass],
+    'fnlwgt': [fnlwgt],
+    'education': [education],
+    'educational-num': [education_num],
+    'marital-status': [marital_status],
+    'occupation': [occupation],
+    'relationship': [relationship],
+    'race': [race],
+    'gender': [sex],
+    'hours-per-week': [hours_per_week],
+    'native-country': [native_country],
+    'capital-gain': [0],  # dummy default
+    'capital-loss': [0]
+})
 
-    # Reorder columns
-    df = df[model_columns]
+# Prediction logic
+def predict_income(data):
+    cat_features = data.select_dtypes(include='object').columns
+    try:
+        for col in cat_features:
+            if col in encoders:
+                le = encoders[col]
+                val = data[col].iloc[0]
+                if val in le.classes_:
+                    data[col] = le.transform([val])
+                else:
+                    st.error(f"Unknown value '{val}' for {col}. Please select a valid option.")
+                    return None, None
+    except Exception as e:
+        st.error(f"Encoding error: {e}")
+        return None, None
 
-    return df
+    try:
+        data = data[columns]
+        pred = model.predict(data)[0]
+        prob = model.predict_proba(data)[0][pred]
+        return pred, prob
+    except Exception as e:
+        st.error(f"Prediction error: {e}")
+        return None, None
 
-# Run prediction
-user_df = user_input()
-
+# Prediction Trigger
 if st.button("Predict Income"):
-    processed = preprocess_input(user_df)
-    prediction = model.predict(processed)[0]
-    prediction_proba = model.predict_proba(processed)[0][prediction]
+    pred, prob = predict_income(user_data)
+    if pred is not None:
+        income_label = ">50K" if pred == 1 else "<=50K"
+        st.success(f"**Prediction:** {income_label}")
+        st.info(f"**Confidence:** {prob:.2%}")
+        st.progress(min(max(int(prob * 100), 1), 100))
 
-    if prediction == 1:
-        st.success(f"✅ Predicted Income: >50K (Confidence: {prediction_proba:.2%})")
-    else:
-        st.warning(f"❌ Predicted Income: <=50K (Confidence: {prediction_proba:.2%})")
+# Static charts
+st.markdown("---")
+st.subheader("📊 Top Influential Features")
+st.image("model1/feature_importance.png", caption="Top features from Random Forest model")
 
-    # Debug
-    with st.expander("See input data"):
-        st.write(user_df)
-
-    with st.expander("See model-ready data"):
-        st.write(processed)
+st.markdown("---")
+st.subheader("📉 Actual vs Predicted")
+st.image("model1/actual_vs_predicted.png", caption="Model's predictions vs actual income values", use_container_width=True)
