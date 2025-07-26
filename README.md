@@ -51,11 +51,17 @@ Once all fields are filled, the app will generate a prediction output such as:
 
 ## 🛠️ Tech Stack
 
-| Tool         | Purpose                      |
-|--------------|------------------------------|
-| Streamlit    | Web application framework    |
-| Python       | Core language for app logic  |
-| scikit-learn / joblib | (Optional) Model loading and prediction |
+| Tool / Library     | Purpose                                                        |
+|--------------------|----------------------------------------------------------------|
+| **Python**         | Core programming language                                      |
+| **Streamlit**      | Interactive frontend and web UI                                |
+| **Pandas**         | Data handling and preprocessing                                |
+| **NumPy**          | Numerical operations                                            |
+| **Scikit-learn**   | Machine learning model training and prediction                 |
+| **Joblib / Pickle**| Model serialization and loading                                |
+| **Matplotlib / Seaborn** | (Optional) Data visualization                           |
+| **Streamlit Cloud**| App deployment                                                 |
+
 
 
 
